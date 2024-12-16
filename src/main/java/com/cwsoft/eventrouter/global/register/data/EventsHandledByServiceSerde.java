@@ -1,7 +1,9 @@
 package com.cwsoft.eventrouter.global.register.data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @SuppressWarnings("unused") // library class for use by messaging implementation
 public class EventsHandledByServiceSerde {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -11,10 +13,15 @@ public class EventsHandledByServiceSerde {
      *
      * @param eventsHandledByService the object to serialize
      * @return the JSON string representation of the object
-     * @throws JsonProcessingException if serialization fails
+     * @throws SerializationException if serialization fails
      */
-    public static String serialize(EventsHandledByService eventsHandledByService) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(eventsHandledByService);
+    public static String serialize(EventsHandledByService eventsHandledByService) {
+        try {
+            return objectMapper.writeValueAsString(eventsHandledByService);
+        } catch (JsonProcessingException e) {
+            log.error("Serialization error for EventsHandledByService: {}", eventsHandledByService, e);
+            throw new SerializationException("Failed to serialize EventsHandledByService", e);
+        }
     }
 
     /**
@@ -22,9 +29,14 @@ public class EventsHandledByServiceSerde {
      *
      * @param json the JSON string
      * @return the deserialized EventsHandledByService object
-     * @throws JsonProcessingException if deserialization fails
+     * @throws SerializationException if deserialization fails
      */
-    public static EventsHandledByService deserialize(String json) throws JsonProcessingException {
-        return objectMapper.readValue(json, EventsHandledByService.class);
+    public static EventsHandledByService deserialize(String json) {
+        try {
+            return objectMapper.readValue(json, EventsHandledByService.class);
+        } catch (JsonProcessingException e) {
+            log.error("Deserialization to EventsHandledByService for json: {}", json, e);
+            throw new SerializationException("Failed to deserialize to EventsHandledByService object", e);
+        }
     }
 }
