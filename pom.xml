@@ -17,8 +17,8 @@
     <dependencies>
         <dependency>
             <groupId>com.cwsoft</groupId>
-            <artifactId>cws-kafka-messaging</artifactId>
-            <version>1.0.1</version>
+            <artifactId>cws-messaging</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
