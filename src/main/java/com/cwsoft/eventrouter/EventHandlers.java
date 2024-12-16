@@ -17,9 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 @Slf4j
 public class EventHandlers {
-    // todo: this constant HANDLED_BY_SERVICE_TOPIC_NAME should be in some separate class not this one as it is not used
-    // by this class
-    public final String HANDLED_BY_SERVICE_TOPIC_NAME = "events.dispatch.handled_by_service";
     public final Class<? extends Annotation> END_POINT_ANNOTATION = EventHandler.class;
 
     private LocalHandlerFactory handlerFactory;
