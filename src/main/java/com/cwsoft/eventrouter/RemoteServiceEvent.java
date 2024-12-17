@@ -13,20 +13,11 @@ import lombok.ToString;
 @Getter
 @Builder
 public class RemoteServiceEvent {
-    private static final String EVENTS_FOR_SERVICE_TOPIC_NAME = "events.dispatch.events_for_service";
     private String remoteServiceId;
     private Event event;
 
-    public String getDestination() {
-        return getDestination(remoteServiceId);
-    }
-
     public boolean isRetryable() {
         return event.isRetryOnFailure();
-    }
-
-    public static String getDestination(String forServiceId) {
-        return EVENTS_FOR_SERVICE_TOPIC_NAME + "_" + forServiceId.replace(" ", "_");
     }
 
 }

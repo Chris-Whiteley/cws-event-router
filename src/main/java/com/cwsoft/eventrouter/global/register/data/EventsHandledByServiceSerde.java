@@ -1,4 +1,6 @@
 package com.cwsoft.eventrouter.global.register.data;
+
+import com.cwsoft.eventrouter.global.SerializationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SuppressWarnings("unused") // library class for use by messaging implementation
 public class EventsHandledByServiceSerde {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .findAndRegisterModules(); // Configure as needed
 
     /**
      * Serializes an EventsHandledByService object to a JSON string.
@@ -16,9 +19,13 @@ public class EventsHandledByServiceSerde {
      * @throws SerializationException if serialization fails
      */
     public static String serialize(EventsHandledByService eventsHandledByService) {
+        if (eventsHandledByService == null) {
+            log.error("Cannot serialize a null EventsHandledByService object");
+            throw new IllegalArgumentException("EventsHandledByService cannot be null");
+        }
         try {
             return objectMapper.writeValueAsString(eventsHandledByService);
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | RuntimeException e) {
             log.error("Serialization error for EventsHandledByService: {}", eventsHandledByService, e);
             throw new SerializationException("Failed to serialize EventsHandledByService", e);
         }
@@ -32,10 +39,14 @@ public class EventsHandledByServiceSerde {
      * @throws SerializationException if deserialization fails
      */
     public static EventsHandledByService deserialize(String json) {
+        if (json == null || json.isEmpty()) {
+            log.error("Cannot deserialize a null or empty JSON string");
+            throw new IllegalArgumentException("JSON string cannot be null or empty");
+        }
         try {
             return objectMapper.readValue(json, EventsHandledByService.class);
-        } catch (JsonProcessingException e) {
-            log.error("Deserialization to EventsHandledByService for json: {}", json, e);
+        } catch (JsonProcessingException | RuntimeException e) {
+            log.error("Deserialization error for JSON: {}", json, e);
             throw new SerializationException("Failed to deserialize to EventsHandledByService object", e);
         }
     }
